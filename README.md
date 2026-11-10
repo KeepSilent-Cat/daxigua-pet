@@ -15,8 +15,8 @@
 > ### 👉 [www.echolnk.top · 大夕瓜桌宠下载页](https://www.echolnk.top/?page=cases&project=daxigua-pet)
 >
 > - Windows 10 / 11（x64）
-> - 安装包 **54.6 MB**，双击运行，**不用装 Node.js / .NET / Python**
-> - 首次启动自动下载 Electron 运行时（约 150 MB，只需一次）
+> - 安装包 **约 207 MB**（离线版，**已内置运行时，安装时不用再联网**）
+> - 双击运行，**不用装 Node.js / .NET / Python**
 > - 装到当前用户目录，不需要管理员权限；卸载 = 删掉文件夹
 
 ---
@@ -52,8 +52,8 @@
 
 ### 方式一：安装包（推荐，普通用户）
 
-去 **[下载页](https://www.echolnk.top/?page=cases&project=daxigua-pet)** 下载 `daxigua-pet-setup.exe`，双击运行即可。
-安装程序会自动下载运行时、解压应用、创建桌面快捷方式并启动。
+去 **[下载页](https://www.echolnk.top/?page=cases&project=daxigua-pet)** 下载安装包，双击运行即可。
+离线版已内置 Electron 运行时，安装时无需联网；装完自动创建桌面快捷方式并启动。
 
 ### 方式二：从源码跑（开发者）
 
