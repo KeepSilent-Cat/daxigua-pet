@@ -1,5 +1,26 @@
 # 大夕瓜桌宠 · DaXiGua Pet (`daxigua-pet`)
 
+<p>
+  <a href="https://www.echolnk.top/?page=cases&project=daxigua-pet"><b>⬇️ 点此下载安装包</b></a>
+  &nbsp;·&nbsp;
+  <a href="https://github.com/KeepSilent-Cat/daxigua-pet">源码</a>
+  &nbsp;·&nbsp;
+  <a href="NOTICE.md">授权说明</a>
+</p>
+
+> ## ⬇️ 不想看代码，只想装来玩？
+>
+> **打开下载页 → 下载 → 双击 → 完事**
+>
+> ### 👉 [www.echolnk.top · 大夕瓜桌宠下载页](https://www.echolnk.top/?page=cases&project=daxigua-pet)
+>
+> - Windows 10 / 11（x64）
+> - 安装包 **54.6 MB**，双击运行，**不用装 Node.js / .NET / Python**
+> - 首次启动自动下载 Electron 运行时（约 150 MB，只需一次）
+> - 装到当前用户目录，不需要管理员权限；卸载 = 删掉文件夹
+
+---
+
 一个 Windows 桌面宠物：透明窗口、分层插画、会呼吸会眨眼、能拖能摸，可以换皮套、换主题，
 接上大模型后还能聊天。
 
@@ -28,6 +49,13 @@
 ---
 
 ## 快速开始（Windows 10/11）
+
+### 方式一：安装包（推荐，普通用户）
+
+去 **[下载页](https://www.echolnk.top/?page=cases&project=daxigua-pet)** 下载 `daxigua-pet-setup.exe`，双击运行即可。
+安装程序会自动下载运行时、解压应用、创建桌面快捷方式并启动。
+
+### 方式二：从源码跑（开发者）
 
 ```powershell
 # 1. 下载 Electron 运行时（约 150 MB，只需一次）
@@ -150,6 +178,11 @@ GET  /health          → {"ok":true}
 - [SurfCore](https://github.com/Mieksido/surfcore) —— 对话/记忆/情绪层
 - [PixiJS](https://pixijs.com/) —— 2D 渲染
 - [Electron](https://www.electronjs.org/) —— 跨平台桌面运行时
+
+## 相关链接
+
+- **下载页（官网）**：[www.echolnk.top/?page=cases&project=daxigua-pet](https://www.echolnk.top/?page=cases&project=daxigua-pet)
+- 更多作者的 AI 工具与项目：[www.echolnk.top](https://www.echolnk.top/)
 
 ## 许可
 
