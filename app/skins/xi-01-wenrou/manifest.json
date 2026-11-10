@@ -1,0 +1,206 @@
+{
+  "schema": 2,
+  "id": "xi-01-wenrou",
+  "name": "夕-温柔",
+  "author": "you",
+  "version": "0.9.0",
+  "rig": "layered",
+  "canvas": {
+    "w": 1024,
+    "h": 1024
+  },
+  "display": {
+    "scale": 0.44
+  },
+  "hitbox": {
+    "x": 0,
+    "y": 0,
+    "w": 1024,
+    "h": 1024
+  },
+  "rigOptions": {
+    "headPivot": [
+      600,
+      500
+    ],
+    "backHairPivot": [
+      512,
+      200
+    ],
+    "mouthPivot": [
+      587,
+      397
+    ],
+    "gazeCenter": [
+      612,
+      320
+    ],
+    "eyeCenters": {
+      "l": [
+        688,
+        345
+      ],
+      "r": [
+        537,
+        295
+      ]
+    },
+    "motion": {
+      "breath": 0.011,
+      "sway": 0.008,
+      "headTurn": 0,
+      "gazeMax": [
+        6,
+        4
+      ],
+      "backHairSway": 0.025
+    },
+    "blinkLash": {
+      "l": [
+        0,
+        11
+      ],
+      "r": [
+        0,
+        8
+      ]
+    },
+    "mouth": {
+      "rest": "closed",
+      "open": "art/14_mouth_open.png",
+      "openPivot": [
+        587,
+        412
+      ],
+      "openOffset": [
+        0,
+        0
+      ],
+      "openRotation": 0,
+      "hideBase": true
+    }
+  },
+  "interaction": {
+    "cursor": "pointer",
+    "regions": [
+      {
+        "id": "head",
+        "gesture": "pat",
+        "cursor": "pointer",
+        "shape": {
+          "type": "ellipse",
+          "cx": 610,
+          "cy": 250,
+          "rx": 175,
+          "ry": 195
+        },
+        "hoverCloseEyes": true
+      },
+      {
+        "id": "body",
+        "gesture": "poke",
+        "cursor": "pointer",
+        "shape": {
+          "type": "rect",
+          "x": 180,
+          "y": 470,
+          "w": 664,
+          "h": 520
+        }
+      }
+    ],
+    "menu": [
+      "pat",
+      "poke",
+      "hop",
+      "blink",
+      "talk",
+      "separator",
+      "resize",
+      "recenter",
+      "hide",
+      "quit"
+    ],
+    "hoverCloseEyes": false
+  },
+  "layers": [
+    {
+      "id": "hair.back",
+      "file": "art/13_hair.back.png",
+      "group": "body",
+      "role": "hair.back"
+    },
+    {
+      "id": "body",
+      "file": "art/01_body.png",
+      "group": "body",
+      "role": "body"
+    },
+    {
+      "id": "head",
+      "file": "art/02_head.png",
+      "group": "head",
+      "role": "face"
+    },
+    {
+      "id": "mouth",
+      "file": "art/03_mouth.png",
+      "group": "head",
+      "role": "mouth"
+    },
+    {
+      "id": "eye.white.l",
+      "file": "art/04_eyewhite-l.png",
+      "group": "head",
+      "role": "eye.white.l"
+    },
+    {
+      "id": "eye.white.r",
+      "file": "art/05_eyewhite-r.png",
+      "group": "head",
+      "role": "eye.white.r"
+    },
+    {
+      "id": "eye.iris.l",
+      "file": "art/08_iris-l.png",
+      "group": "head",
+      "role": "eye.iris.l"
+    },
+    {
+      "id": "eye.iris.r",
+      "file": "art/09_iris-r.png",
+      "group": "head",
+      "role": "eye.iris.r"
+    },
+    {
+      "id": "eye.lash.l",
+      "file": "art/06_lash-l.png",
+      "group": "head",
+      "role": "eye.lash.l"
+    },
+    {
+      "id": "eye.lash.r",
+      "file": "art/07_lash-r.png",
+      "group": "head",
+      "role": "eye.lash.r"
+    },
+    {
+      "id": "brow.l",
+      "file": "art/10_brow-l.png",
+      "group": "head",
+      "role": "brow.l"
+    },
+    {
+      "id": "brow.r",
+      "file": "art/11_brow-r.png",
+      "group": "head",
+      "role": "brow.r"
+    },
+    {
+      "id": "hair.front",
+      "file": "art/12_hair.front.png",
+      "group": "head",
+      "role": "hair.front"
+    }
+  ]
+}

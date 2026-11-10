@@ -1,0 +1,51 @@
+{
+  "schema": 2,
+  "id": "xi-05-shuiyi",
+  "name": "夕-睡衣",
+  "author": "you",
+  "version": "0.4.0",
+  "rig": "layered",
+  "canvas": { "w": 1280, "h": 1280 },
+  "display": { "scale": 0.402 },
+  "hitbox": { "x": 308, "y": 186, "w": 723, "h": 996 },
+  "rigOptions": {
+    "headPivot": [630, 750],
+    "backHairPivot": [630, 520],
+    "mouthPivot": [633, 645],
+    "gazeCenter": [635, 580],
+    "eyeCenters": { "l": [715, 580], "r": [555, 580] },
+    "motion": { "breath": 0.011, "sway": 0.008, "headTurn": 6, "gazeMax": [5, 3], "backHairSway": 0.02 },
+    "blinkLash": { "l": [0, 50], "r": [0, 47] }
+  },
+  "interaction": {
+    "cursor": "pointer",
+    "regions": [
+      { "id": "head", "gesture": "pat", "cursor": "pointer",
+        "shape": { "type": "ellipse", "cx": 630, "cy": 520, "rx": 235, "ry": 200 },
+        "hoverCloseEyes": true },
+      { "id": "body", "gesture": "poke", "cursor": "pointer",
+        "shape": { "type": "rect", "x": 380, "y": 700, "w": 520, "h": 500 } }
+    ],
+    "menu": ["pat", "poke", "hop", "blink", "talk", "separator", "resize", "recenter", "hide", "quit"],
+    "hoverCloseEyes": false
+  },
+  "layers": [
+    { "id": "residual",   "file": "art/00_reconstruction_residual.png", "group": "body", "role": "body" },
+    { "id": "hair.back",  "file": "art/01_hair.back.png",               "group": "body", "role": "hair.back" },
+    { "id": "legwear",    "file": "art/02_legwear.png",                 "group": "body", "role": "legwear" },
+    { "id": "topwear",    "file": "art/03_topwear.png",                 "group": "body", "role": "topwear" },
+    { "id": "arm.r",      "file": "art/05_arm.l.png",                   "group": "body", "role": "arm.r" },
+    { "id": "arm.l",      "file": "art/06_arm.r.png",                   "group": "body", "role": "arm.l" },
+    { "id": "neck",       "file": "art/04_neck.png",                    "group": "body", "role": "neck" },
+    { "id": "head",       "file": "art/08_face.png",                    "group": "head", "role": "face" },
+    { "id": "ears",       "file": "art/07_ears.png",                    "group": "head", "role": "ears" },
+    { "id": "nose",       "file": "art/09_nose.png",                    "group": "head", "role": "nose" },
+    { "id": "mouth",      "file": "art/10_mouth.png",                   "group": "head", "role": "mouth" },
+    { "id": "eye.white.r","file": "art/11_eye.white.l.png",             "group": "head", "role": "eye.white.r" },
+    { "id": "eye.white.l","file": "art/12_eye.white.r.png",             "group": "head", "role": "eye.white.l" },
+    { "id": "eye.lash.r", "file": "art/15_eye.lash.l.png",              "group": "head", "role": "eye.lash.r" },
+    { "id": "eye.lash.l", "file": "art/16_eye.lash.r.png",              "group": "head", "role": "eye.lash.l" },
+    { "id": "hair.front", "file": "art/17_hair.front.png",              "group": "head", "role": "hair.front" },
+    { "id": "headwear",   "file": "art/18_headwear.png",                "group": "head", "role": "headwear" }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "daxigua-pet",
+  "version": "0.2.3",
+  "private": true,
+  "description": "大夕瓜桌宠 — 可换装的分层桌面宠物（Electron + PixiJS）",
+  "main": "dist/main.js",
+  "scripts": {
+    "start": "node scripts/start.mjs"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "pixi.js": "^8.22.0"
+  }
+}

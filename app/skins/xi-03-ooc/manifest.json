@@ -1,0 +1,69 @@
+{
+  "schema": 2,
+  "id": "xi-03-ooc",
+  "name": "夕-ooc",
+  "author": "you",
+  "version": "0.1.0",
+  "rig": "layered",
+  "canvas": {
+    "w": 1280,
+    "h": 1280
+  },
+  "display": {
+    "scale": 0.329
+  },
+  "hitbox": {
+    "x": 24,
+    "y": 101,
+    "w": 1232,
+    "h": 1155
+  },
+  "interaction": {
+    "cursor": "pointer",
+    "regions": [
+      {
+        "id": "head",
+        "gesture": "pat",
+        "cursor": "pointer",
+        "shape": {
+          "type": "ellipse",
+          "cx": 640,
+          "cy": 344,
+          "rx": 567,
+          "ry": 242
+        },
+        "hoverCloseEyes": false
+      },
+      {
+        "id": "body",
+        "gesture": "poke",
+        "cursor": "pointer",
+        "shape": {
+          "type": "rect",
+          "x": 24,
+          "y": 392,
+          "w": 1232,
+          "h": 864
+        }
+      }
+    ],
+    "menu": [
+      "pat",
+      "poke",
+      "hop",
+      "separator",
+      "recenter",
+      "hide",
+      "quit"
+    ],
+    "hoverCloseEyes": false
+  },
+  "layers": [
+    {
+      "id": "body",
+      "file": "art/01_body.png",
+      "group": "body",
+      "role": "body"
+    }
+  ]
+}

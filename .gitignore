@@ -1,0 +1,35 @@
+# 忽略规则
+# 运行时与依赖
+runtime/
+node_modules/
+*.log
+
+# 用户数据（含聊天记录、设置、缓存，绝不能提交）
+app/data/
+
+# 构建产物
+bin/
+obj/
+*.exe
+!tools/**/*.exe
+
+# 开发缓存
+.dotnet/
+.nuget/
+.npm-cache/
+.electron-cache/
+__pycache__/
+*.pyc
+
+# 系统
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# 临时/调试
+*.orig
+*.bak
+*.map
+state/
+_preview/
+_预览/

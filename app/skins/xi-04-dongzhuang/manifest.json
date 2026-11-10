@@ -1,0 +1,69 @@
+{
+  "schema": 2,
+  "id": "xi-04-dongzhuang",
+  "name": "夕·冬装(单层)",
+  "author": "you",
+  "version": "0.1.0",
+  "rig": "layered",
+  "canvas": {
+    "w": 1280,
+    "h": 1280
+  },
+  "display": {
+    "scale": 0.329
+  },
+  "hitbox": {
+    "x": 52,
+    "y": 40,
+    "w": 1175,
+    "h": 1216
+  },
+  "interaction": {
+    "cursor": "pointer",
+    "regions": [
+      {
+        "id": "head",
+        "gesture": "pat",
+        "cursor": "pointer",
+        "shape": {
+          "type": "ellipse",
+          "cx": 640,
+          "cy": 295,
+          "rx": 540,
+          "ry": 255
+        },
+        "hoverCloseEyes": false
+      },
+      {
+        "id": "body",
+        "gesture": "poke",
+        "cursor": "pointer",
+        "shape": {
+          "type": "rect",
+          "x": 53,
+          "y": 346,
+          "w": 1174,
+          "h": 910
+        }
+      }
+    ],
+    "menu": [
+      "pat",
+      "poke",
+      "hop",
+      "separator",
+      "recenter",
+      "hide",
+      "quit"
+    ],
+    "hoverCloseEyes": false
+  },
+  "layers": [
+    {
+      "id": "body",
+      "file": "art/01_body.png",
+      "group": "body",
+      "role": "body"
+    }
+  ]
+}

@@ -1,0 +1,215 @@
+/* name: {{NAME}} */
+/* ============================================================
+   surfpet 主题模板
+   改配色只需改下面 :root 里的值，然后重跑生成脚本。
+   覆盖范围：bubble.html（气泡）+ dialog.html（对话框）全部带颜色的规则。
+   ============================================================ */
+:root {
+  /* 墨 */
+  --ink:       {{INK}};
+  --ink-soft:  {{INK_SOFT}};
+  --line:      {{LINE}};
+  /* 绿（同时接管原来的 pink / blue 变量，原 CSS 用 var() 的地方会自动跟随） */
+  --g-rgb:     {{RGB}};
+  --g:         rgb(var(--g-rgb));
+  --g-deep:    {{GREEN_DEEP}};
+  --pink:      rgb(var(--g-rgb));
+  --pink-deep: {{GREEN_DEEP}};
+  --blue:      rgb(var(--g-rgb));
+  --blue-deep: {{GREEN_DEEP}};
+  /* 纸 */
+  --card:      {{CARD}};
+  --paper-hi:  {{PAPER_HI}};
+  --paper-lo:  {{PAPER_LO}};
+  --paper-lo2: {{PAPER_LO2}};
+  /* 印章 */
+  --seal:      {{ACCENT}};
+  --seal-fg:   {{ACCENT_FG}};
+  /* 织纹 */
+  --weave:     {{WEAVE}};
+  /* 语义色（对勾/报错，保留可读性但压低饱和） */
+  --ok:        #3f8f6a;
+  --bad:       #9c4a44;
+}
+
+/* 绸面底：斜向高光 + 柔光 + 极细织纹 + 冷白纸 */
+{{SELECTOR_CARD}} {
+  border-radius: 7px !important;
+  background-color: var(--paper-hi) !important;
+  background-image:
+    linear-gradient(135deg, rgba(255,255,255,0.62) 0%, rgba(255,255,255,0) 34%,
+                    rgba(255,255,255,0.34) 50%, rgba(255,255,255,0) 68%),
+    radial-gradient(120% 80% at 10% 0%, rgba(255,255,255,0.80), rgba(255,255,255,0) 62%),
+    repeating-linear-gradient(102deg, var(--weave) 0 2px, rgba(0,0,0,0) 2px 5px),
+    linear-gradient(168deg, var(--paper-hi) 0%, var(--paper-lo) 62%, var(--paper-lo2) 100%) !important;
+  border-color: rgba(var(--g-rgb), 0.34) !important;
+  box-shadow:
+    0 12px 30px rgba(16, 28, 24, 0.18),
+    0 0 0 1px rgba(255, 255, 255, 0.55) inset,
+    0 1px 0 rgba(255, 255, 255, 0.9) inset !important;
+  color: var(--ink) !important;
+}
+.app { border: 1px solid rgba(var(--g-rgb), 0.34) !important; }
+
+/* 通用字体：楷体优先 */
+body, .text, textarea, .bubble, input {
+  font-family: "KaiTi", "STKaiti", "Kaiti SC", "楷体", "Songti SC", "SimSun", serif !important;
+}
+
+/* ============ 气泡窗口 ============ */
+.card { scrollbar-color: rgba(var(--g-rgb), 0.45) transparent !important; }
+.card::-webkit-scrollbar-thumb { background: rgba(var(--g-rgb), 0.45) !important; border-radius: 8px !important; }
+
+.tail {
+  background-color: var(--paper-lo) !important;
+  background-image: none !important;
+  border-right: 1px solid rgba(var(--g-rgb), 0.34) !important;
+  border-bottom: 1px solid rgba(var(--g-rgb), 0.34) !important;
+  border-bottom-right-radius: 2px !important;
+}
+.who { color: var(--ink-soft) !important; letter-spacing: 0.6px; }
+
+.fish {
+  background: var(--seal) !important;
+  color: var(--seal-fg) !important;
+  border-radius: 3px !important;
+  box-shadow: 0 0 0 1px rgba(10, 22, 18, 0.35) inset, 0 1px 3px rgba(10, 20, 16, 0.22) !important;
+  font-size: 12px !important;
+}
+.tag {
+  background: rgba(var(--g-rgb), 0.14) !important;
+  color: var(--g-deep) !important;
+  border: 1px solid rgba(var(--g-rgb), 0.30) !important;
+  letter-spacing: 0.5px;
+}
+.text { color: var(--ink) !important; font-size: 14.5px !important; line-height: 1.85 !important; letter-spacing: 0.3px; }
+
+.play {
+  border: 1px solid rgba(var(--g-rgb), 0.32) !important;
+  background: rgba(255, 255, 255, 0.66) !important;
+  color: var(--g-deep) !important;
+  border-radius: 4px !important;
+}
+.play:hover { background: rgba(255, 255, 255, 0.92) !important; }
+.play.playing { background: rgba(var(--g-rgb), 0.16) !important; }
+
+button.reply {
+  border-radius: 4px !important;
+  background: linear-gradient(180deg, var(--g) 0%, var(--g-deep) 100%) !important;
+  color: #f7faf8 !important;
+  letter-spacing: 2px;
+  box-shadow: 0 3px 10px rgba(16, 36, 30, 0.26), 0 1px 0 rgba(255,255,255,0.22) inset !important;
+}
+button.reply:hover { filter: brightness(1.08); }
+button.close { color: var(--ink-soft) !important; }
+button.close:hover { color: var(--ink) !important; background: rgba(18, 26, 23, 0.06) !important; }
+
+/* ============ 对话框窗口 ============ */
+.bar { background: rgba(255, 255, 255, 0.52) !important; border-bottom: 1px solid var(--line) !important; }
+
+.avatar {
+  background: var(--seal) !important;
+  color: var(--seal-fg) !important;
+  border-radius: 4px !important;
+  box-shadow: 0 2px 8px rgba(12, 24, 20, 0.28) !important;
+}
+.mini-avatar {
+  background: var(--seal) !important;
+  color: var(--seal-fg) !important;
+  border-radius: 4px !important;
+}
+
+.name { color: var(--ink) !important; letter-spacing: 1px; }
+.sub, .hint-line, .who, .meta, .typing { color: var(--ink-soft) !important; }
+
+.dot { background: var(--ink-soft) !important; box-shadow: none !important; }
+.dot.ok { background: var(--ok) !important; box-shadow: 0 0 0 3px rgba(63, 143, 106, 0.16) !important; }
+.dot.bad { background: var(--bad) !important; box-shadow: 0 0 0 3px rgba(156, 74, 68, 0.16) !important; }
+
+.modes {
+  background: rgba(255, 255, 255, 0.62) !important;
+  border: 1px solid rgba(var(--g-rgb), 0.28) !important;
+  border-radius: 5px !important;
+}
+.mode {
+  border-radius: 4px !important;
+  color: var(--ink-soft) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.mode.on {
+  background: linear-gradient(180deg, var(--g) 0%, var(--g-deep) 100%) !important;
+  color: #f7faf8 !important;
+  box-shadow: 0 2px 8px rgba(16, 36, 30, 0.24) !important;
+}
+.icon-btn { color: var(--ink-soft) !important; }
+.icon-btn:hover { background: rgba(18, 26, 23, 0.07) !important; color: var(--ink) !important; }
+
+.messages { color: var(--ink) !important; scrollbar-color: rgba(var(--g-rgb), 0.40) transparent !important; }
+.messages::-webkit-scrollbar-thumb { background: rgba(var(--g-rgb), 0.35) !important; border-radius: 8px !important; }
+
+/* 消息气泡：默认（她）冷白 + 墨绿细边；我说的话用淡绿 */
+.bubble {
+  background: rgba(253, 255, 254, 0.96) !important;
+  border: 1px solid rgba(var(--g-rgb), 0.30) !important;
+  border-radius: 10px 10px 10px 4px !important;
+  box-shadow: 0 2px 8px rgba(16, 28, 24, 0.07) !important;
+  color: var(--ink) !important;
+}
+.row.me .bubble {
+  background: linear-gradient(180deg, rgba(var(--g-rgb), 0.10), rgba(var(--g-rgb), 0.06)) !important;
+  border-color: rgba(var(--g-rgb), 0.34) !important;
+  border-radius: 10px 10px 4px 10px !important;
+  color: var(--ink) !important;
+}
+.tag-proactive {
+  background: rgba(var(--g-rgb), 0.14) !important;
+  border: 1px solid rgba(var(--g-rgb), 0.30) !important;
+  color: var(--g-deep) !important;
+  border-radius: 4px !important;
+}
+
+.voice-row { border-top: 1px dashed rgba(var(--g-rgb), 0.32) !important; }
+.voice-play {
+  border: 1px solid rgba(var(--g-rgb), 0.36) !important;
+  background: rgba(255, 255, 255, 0.72) !important;
+  color: var(--g-deep) !important;
+  border-radius: 4px !important;
+}
+.voice-play:hover { background: rgba(255, 255, 255, 0.95) !important; }
+.voice-play.playing { background: rgba(var(--g-rgb), 0.16) !important; }
+.typing .dots i { background: var(--g) !important; }
+
+.banner {
+  background: rgba(var(--g-rgb), 0.10) !important;
+  border: 1px solid rgba(var(--g-rgb), 0.26) !important;
+  color: var(--g-deep) !important;
+  border-radius: 4px !important;
+}
+.banner button {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border: 1px solid rgba(var(--g-rgb), 0.34) !important;
+  color: var(--g-deep) !important;
+  border-radius: 4px !important;
+}
+
+.composer { background: rgba(255, 255, 255, 0.55) !important; border-top: 1px solid var(--line) !important; }
+textarea {
+  border: 1px solid rgba(var(--g-rgb), 0.30) !important;
+  background: rgba(255, 255, 255, 0.88) !important;
+  color: var(--ink) !important;
+  border-radius: 6px !important;
+}
+textarea:focus {
+  border-color: rgba(var(--g-rgb), 0.62) !important;
+  box-shadow: 0 0 0 3px rgba(var(--g-rgb), 0.14) !important;
+}
+textarea::placeholder { color: rgba(90, 102, 99, 0.75) !important; }
+
+.send {
+  border-radius: 6px !important;
+  background: linear-gradient(180deg, var(--g) 0%, var(--g-deep) 100%) !important;
+  color: #f7faf8 !important;
+  box-shadow: 0 4px 12px rgba(16, 36, 30, 0.28) !important;
+}
+.send:hover { filter: brightness(1.08); }
