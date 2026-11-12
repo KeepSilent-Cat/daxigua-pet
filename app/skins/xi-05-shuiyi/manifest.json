@@ -3,49 +3,255 @@
   "id": "xi-05-shuiyi",
   "name": "夕-睡衣",
   "author": "you",
-  "version": "0.4.0",
+  "version": "0.6.0",
   "rig": "layered",
-  "canvas": { "w": 1280, "h": 1280 },
-  "display": { "scale": 0.402 },
-  "hitbox": { "x": 308, "y": 186, "w": 723, "h": 996 },
+  "canvas": {
+    "w": 1280,
+    "h": 1280
+  },
+  "display": {
+    "scale": 0.345
+  },
+  "hitbox": {
+    "x": 215,
+    "y": 39,
+    "w": 877,
+    "h": 1159
+  },
   "rigOptions": {
-    "headPivot": [630, 750],
-    "backHairPivot": [630, 520],
-    "mouthPivot": [633, 645],
-    "gazeCenter": [635, 580],
-    "eyeCenters": { "l": [715, 580], "r": [555, 580] },
-    "motion": { "breath": 0.011, "sway": 0.008, "headTurn": 6, "gazeMax": [5, 3], "backHairSway": 0.02 },
-    "blinkLash": { "l": [0, 50], "r": [0, 47] }
+    "headPivot": [
+      637,
+      640
+    ],
+    "backHairPivot": [
+      637,
+      330
+    ],
+    "mouthPivot": [
+      640,
+      588
+    ],
+    "gazeCenter": [
+      637,
+      525
+    ],
+    "eyeCenters": {
+      "l": [
+        746,
+        526
+      ],
+      "r": [
+        528,
+        524
+      ]
+    },
+    "motion": {
+      "breath": 0.011,
+      "sway": 0.008,
+      "headTurn": 4,
+      "gazeMax": [
+        18,
+        5
+      ],
+      "backHairSway": 0.02,
+      "earTwitch": 0.06,
+      "earTwitchEvery": [
+        3,
+        9
+      ]
+    },
+    "blinkLash": {
+      "l": [
+        0,
+        50
+      ],
+      "r": [
+        0,
+        49
+      ]
+    },
+    "mouth": {
+      "rest": "closed",
+      "open": "art/10_mouth_open.png",
+      "openPivot": [
+        640,
+        588
+      ],
+      "openOffset": [
+        7,
+        1
+      ],
+      "openRotation": 0,
+      "hideBase": true
+    },
+    "earPivot": {
+      "l": [
+        845,
+        548
+      ],
+      "r": [
+        448,
+        542
+      ]
+    }
   },
   "interaction": {
     "cursor": "pointer",
     "regions": [
-      { "id": "head", "gesture": "pat", "cursor": "pointer",
-        "shape": { "type": "ellipse", "cx": 630, "cy": 520, "rx": 235, "ry": 200 },
-        "hoverCloseEyes": true },
-      { "id": "body", "gesture": "poke", "cursor": "pointer",
-        "shape": { "type": "rect", "x": 380, "y": 700, "w": 520, "h": 500 } }
+      {
+        "id": "head",
+        "gesture": "pat",
+        "cursor": "pointer",
+        "shape": {
+          "type": "ellipse",
+          "cx": 637,
+          "cy": 500,
+          "rx": 300,
+          "ry": 210
+        },
+        "hoverCloseEyes": true
+      },
+      {
+        "id": "body",
+        "gesture": "poke",
+        "cursor": "pointer",
+        "shape": {
+          "type": "rect",
+          "x": 348,
+          "y": 632,
+          "w": 583,
+          "h": 566
+        }
+      }
     ],
-    "menu": ["pat", "poke", "hop", "blink", "talk", "separator", "resize", "recenter", "hide", "quit"],
+    "menu": [
+      "pat",
+      "poke",
+      "hop",
+      "blink",
+      "talk",
+      "separator",
+      "resize",
+      "recenter",
+      "hide",
+      "quit"
+    ],
     "hoverCloseEyes": false
   },
   "layers": [
-    { "id": "residual",   "file": "art/00_reconstruction_residual.png", "group": "body", "role": "body" },
-    { "id": "hair.back",  "file": "art/01_hair.back.png",               "group": "body", "role": "hair.back" },
-    { "id": "legwear",    "file": "art/02_legwear.png",                 "group": "body", "role": "legwear" },
-    { "id": "topwear",    "file": "art/03_topwear.png",                 "group": "body", "role": "topwear" },
-    { "id": "arm.r",      "file": "art/05_arm.l.png",                   "group": "body", "role": "arm.r" },
-    { "id": "arm.l",      "file": "art/06_arm.r.png",                   "group": "body", "role": "arm.l" },
-    { "id": "neck",       "file": "art/04_neck.png",                    "group": "body", "role": "neck" },
-    { "id": "head",       "file": "art/08_face.png",                    "group": "head", "role": "face" },
-    { "id": "ears",       "file": "art/07_ears.png",                    "group": "head", "role": "ears" },
-    { "id": "nose",       "file": "art/09_nose.png",                    "group": "head", "role": "nose" },
-    { "id": "mouth",      "file": "art/10_mouth.png",                   "group": "head", "role": "mouth" },
-    { "id": "eye.white.r","file": "art/11_eye.white.l.png",             "group": "head", "role": "eye.white.r" },
-    { "id": "eye.white.l","file": "art/12_eye.white.r.png",             "group": "head", "role": "eye.white.l" },
-    { "id": "eye.lash.r", "file": "art/15_eye.lash.l.png",              "group": "head", "role": "eye.lash.r" },
-    { "id": "eye.lash.l", "file": "art/16_eye.lash.r.png",              "group": "head", "role": "eye.lash.l" },
-    { "id": "hair.front", "file": "art/17_hair.front.png",              "group": "head", "role": "hair.front" },
-    { "id": "headwear",   "file": "art/18_headwear.png",                "group": "head", "role": "headwear" }
+    {
+      "id": "hair.back",
+      "file": "art/01_hair.back.png",
+      "group": "body",
+      "role": "hair.back"
+    },
+    {
+      "id": "body",
+      "file": "art/02_body.png",
+      "group": "body",
+      "role": "body"
+    },
+    {
+      "id": "ears.l",
+      "file": "art/05_ears.l.png",
+      "group": "head",
+      "role": "ears.l"
+    },
+    {
+      "id": "ears.r",
+      "file": "art/06_ears.r.png",
+      "group": "head",
+      "role": "ears.r"
+    },
+    {
+      "id": "face",
+      "file": "art/07_face.png",
+      "group": "head",
+      "role": "face"
+    },
+    {
+      "id": "mouth",
+      "file": "art/9_mouth.png",
+      "group": "head",
+      "role": "mouth"
+    },
+    {
+      "id": "eye.white.l",
+      "file": "art/11_eye.white.l.png",
+      "group": "head",
+      "role": "eye.white.l"
+    },
+    {
+      "id": "eye.white.r",
+      "file": "art/12_eye.white.r.png",
+      "group": "head",
+      "role": "eye.white.r"
+    },
+    {
+      "id": "eye.iris.l",
+      "file": "art/13_eye.iris.l.png",
+      "group": "head",
+      "role": "eye.iris.l"
+    },
+    {
+      "id": "eye.iris.r",
+      "file": "art/14_eye.iris.r.png",
+      "group": "head",
+      "role": "eye.iris.r"
+    },
+    {
+      "id": "eye.lash.l",
+      "file": "art/15_eye.lash.l.png",
+      "group": "head",
+      "role": "eye.lash.l"
+    },
+    {
+      "id": "eye.lash.r",
+      "file": "art/16_eye.lash.r.png",
+      "group": "head",
+      "role": "eye.lash.r"
+    },
+    {
+      "id": "hair.front",
+      "file": "art/17_hair.front.png",
+      "group": "head",
+      "role": "hair.front"
+    },
+    {
+      "id": "headwear",
+      "file": "art/18_headwear.png",
+      "group": "head",
+      "role": "headwear"
+    },
+    {
+      "id": "brow.r",
+      "file": "art/19_eyebrows.r.png",
+      "group": "head",
+      "role": "brow.r"
+    },
+    {
+      "id": "brow.l",
+      "file": "art/20_eyebrows.l.png",
+      "group": "head",
+      "role": "brow.l"
+    },
+    {
+      "id": "corner.r",
+      "file": "art/21_corner.r.png",
+      "group": "head",
+      "role": "corner.r"
+    },
+    {
+      "id": "corner.l",
+      "file": "art/22_corner.l.png",
+      "group": "head",
+      "role": "corner.l"
+    },
+    {
+      "id": "headwear.top",
+      "file": "art/23_headwear.png",
+      "group": "head",
+      "role": "headwear"
+    }
   ]
 }

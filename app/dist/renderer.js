@@ -43225,6 +43225,7 @@ ${parts.join("\n")}
         motion: { ...DEFAULTS.motion, ...o2.motion ?? {} },
         tailPivot: o2.tailPivot,
         irisOffset: o2.irisOffset,
+        earPivot: o2.earPivot,
         tailAmp: o2.tailAmp ?? 0.1,
         mouthTalk: o2.mouthTalk ?? false,
         mouth: o2.mouth,
@@ -43450,6 +43451,19 @@ ${parts.join("\n")}
           this.head.addChild(sp);
           firstHeadIndex = Math.min(firstHeadIndex, idx);
           this.brows.push(sp);
+        } else if (role === "ears.l" || role === "ears.r") {
+          const __side = role.slice(-1);
+          const __wrap = new Container();
+          const __ep = this.opts.earPivot && this.opts.earPivot[__side]
+            ? this.opts.earPivot[__side]
+            : [this.manifest.canvas.w / 2, this.manifest.canvas.h / 2];
+          __wrap.position.set(__ep[0], __ep[1]);
+          __wrap.pivot.set(__ep[0], __ep[1]);
+          __wrap.zIndex = idx;
+          __wrap.addChild(sp);
+          this.head.addChild(__wrap);
+          if (__side === "l") this.earL = __wrap; else this.earR = __wrap;
+          firstHeadIndex = Math.min(firstHeadIndex, idx);
         } else if (layer.group === "head") {
           this.head.addChild(sp);
           firstHeadIndex = Math.min(firstHeadIndex, idx);
@@ -43882,6 +43896,23 @@ ${parts.join("\n")}
         const wag = Math.sin(this.t * 9.5) * amp * this.wagEnergy * 1.9;
         this.tailWrap.rotation = idle + wag - this.tailShy * amp * 0.8;
         this.tailWrap.y = (this.opts.tailPivot?.[1] ?? 0) - this.tailShy * 6;
+      }
+      const __earAmp = this.opts.motion?.earTwitch ?? 0;
+      if (__earAmp > 0 && (this.earL || this.earR)) {
+        const __every = this.opts.motion?.earTwitchEvery ?? [3, 9];
+        if (!this.__earNext || this.t > this.__earNext) {
+          this.__earNext = this.t + __every[0] + Math.random() * Math.max(0, __every[1] - __every[0]);
+          this.__earAt = this.t;
+        }
+        let __a = 0;
+        if (this.__earAt && this.t - this.__earAt < 0.4) {
+          const __k = (this.t - this.__earAt) / 0.4;
+          __a = Math.sin(__k * Math.PI * 3) * (1 - __k) * __earAmp;
+        }
+        if (patting) __a += Math.sin(this.t * 24) * __earAmp * 0.9;
+        __a += Math.sin(this.t * 1.7) * __earAmp * 0.12;
+        if (this.earL) this.earL.rotation = -__a;
+        if (this.earR) this.earR.rotation = __a;
       }
       if (this.mouthMode !== "none") {
         const idle = this.opts.mouth?.rest === "open" ? 1 : 0;
