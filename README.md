@@ -1,11 +1,14 @@
 # 大夕瓜桌宠 · DaXiGua Pet (`daxigua-pet`)
 
 <p align="center">
-  <img src="docs/assets/demo.gif" alt="大夕瓜桌宠演示：呼吸、眨眼、视线跟随、耳朵抽动、说话口型" width="380">
+  <img src="docs/assets/demo.gif" alt="大夕瓜桌宠 · 夕-睡衣（19 层）演示" width="330">
+  &nbsp;&nbsp;
+  <img src="docs/assets/demo-wenrou.gif" alt="大夕瓜桌宠 · 夕-温柔（13 层）演示" width="330">
 </p>
 
 <p align="center">
-  <sub>呼吸 · 眨眼 · 视线跟随鼠标 · 耳朵抽动 · 说话口型（4 秒循环）</sub>
+  <sub><b>夕-睡衣</b>（19 层） &nbsp;&nbsp;·&nbsp;&nbsp; <b>夕-温柔</b>（13 层）</sub><br>
+  <sub>呼吸 · 眨眼 · 视线跟随鼠标 · 说话口型（睡衣还多一个耳朵抽动）</sub>
 </p>
 
 <p>
