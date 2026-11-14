@@ -918,10 +918,10 @@ if (!hasSingleInstance) {
 var settings = { scale: 0.44, skin: "", wander: true, talker: null };
 var TALKER_DEFAULTS = {
   enabled: true,
-  chance: 0.15,
-  minGapMin: 20,
-  quiet: ["01:00", "08:30"],
-  maxPerHour: 3,
+  chance: 0.35,
+  minGapMin: 8,
+  quiet: [],
+  maxPerHour: 6,
   recentLines: []
 };
 function settingsPath() {
@@ -1349,7 +1349,7 @@ function startWalk() {
   const dist = Math.abs(target - b.x);
   if (dist < 60) return;
 
-  const durMs = Math.min(12000, Math.max(1000, (dist / wanderState.speed) * 1000));
+  const durMs = Math.min(9000, Math.max(900, (dist / wanderState.speed) * 1000));
   const t0 = Date.now();
   const x0 = b.x;
   wanderState.dir = target > x0 ? 1 : -1;
@@ -1374,11 +1374,11 @@ function startWander() {
   wanderState.timer = setInterval(() => {
     try {
       if (wanderState.moving || wanderBlocked()) return;
-      if (Math.random() < 0.4) startWalk();
+      if (Math.random() < 0.15) startWalk();
     } catch (err) {
       console.warn("[wander] tick failed", err);
     }
-  }, 4000);
+  }, 20000);
   console.log("[wander] on");
 }
 
