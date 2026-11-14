@@ -528,6 +528,7 @@ var ChatHost = class {
     x = Math.min(Math.max(x, wa.x + 4), wa.x + wa.width - w - 4);
     y = Math.min(Math.max(y, wa.y + 4), wa.y + wa.height - h - 4);
     win2.setBounds({ x, y, width: w, height: h });
+    console.log("[bubble] at", x, y, w + "x" + h, "wa", wa.x, wa.y, wa.width + "x" + wa.height);
   }
   onPetMoved() {
     if (this.bubbleVisible) this.positionBubble();
@@ -657,7 +658,11 @@ var ChatHost = class {
       autoplay: !this.dialogAudioActive(),
       audio: message.audio?.url ? { url: message.audio.url, durationMs: Number(message.audio.durationMs) || 0 } : void 0
     };
-    const speechMs = payload.audio?.durationMs ? payload.audio.durationMs + 600 : Math.min(15e3, Math.max(3e3, 700 + payload.text.length * 130));
+    let speechMs = payload.audio?.durationMs
+      ? payload.audio.durationMs + 600
+      : Math.min(15e3, Math.max(3e3, 700 + payload.text.length * 130));
+    // 主动说的话至少停留 6 秒，否则一转眼就没了
+    if (payload.proactive) speechMs = Math.max(speechMs, 6000);
     this.deps.onSpeak(speechMs);
     if (this.bubbleVisible) {
       this.displayBubble(payload);
