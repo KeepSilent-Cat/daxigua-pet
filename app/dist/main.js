@@ -915,7 +915,15 @@ if (!hasSingleInstance) {
     if (win) win.showInactive();
   });
 }
-var settings = { scale: 0.44, skin: "", wander: true };
+var settings = { scale: 0.44, skin: "", wander: true, talker: null };
+var TALKER_DEFAULTS = {
+  enabled: true,
+  chance: 0.15,
+  minGapMin: 20,
+  quiet: ["01:00", "08:30"],
+  maxPerHour: 3,
+  recentLines: []
+};
 function settingsPath() {
   return import_node_path3.default.join(import_electron2.app.getPath("userData"), "settings.json");
 }
@@ -928,10 +936,12 @@ function loadSettings() {
       skin: typeof raw.skin === "string" ? raw.skin : "",
       dialogMode: raw.dialogMode === "voice" ? "voice" : "text",
       focusMode: raw.focusMode === true,
-      wander: raw.wander !== false
+      wander: raw.wander !== false,
+      talker: Object.assign({}, TALKER_DEFAULTS, raw.talker || {})
     };
   } catch {
-    return { scale: 0.44, skin: "", dialogMode: "text", focusMode: false, wander: true };
+    return { scale: 0.44, skin: "", dialogMode: "text", focusMode: false, wander: true,
+      talker: Object.assign({}, TALKER_DEFAULTS) };
   }
 }
 function persistSettings() {
@@ -1288,6 +1298,10 @@ function snapToEdge() {
   if (nx !== x || ny !== y) animateTo(nx, ny);
 }
 function send(cmd) {
+  try {
+    if (cmd === "pat") talkerState.lastPatAt = Date.now();
+    else if (cmd === "poke") talkerState.lastPokeAt = Date.now();
+  } catch {}
   win?.webContents.send("pet:command", cmd);
 }
 
@@ -1376,6 +1390,152 @@ function stopWander() {
 
 function applyWanderSetting() {
   if (settings.wander) startWander(); else stopWander();
+}
+
+// ---------------- 自己说话（talker / P1：本地台词库） ----------------
+var talkerState = { timer: null, lastAt: 0, hourWindowStart: 0, hourCount: 0, lastPatAt: 0, lastPokeAt: 0, lines: null };
+
+function talkerCfg() {
+  return Object.assign({}, TALKER_DEFAULTS, settings.talker || {});
+}
+
+function loadLines() {
+  if (talkerState.lines) return talkerState.lines;
+  try {
+    const p = import_node_path3.default.join(appRoot(), "talk", "lines.json");
+    const raw = JSON.parse(import_node_fs2.default.readFileSync(p, "utf8"));
+    talkerState.lines = Array.isArray(raw.categories) ? raw.categories : [];
+    console.log("[talker] lines loaded:", talkerState.lines.length, "categories");
+  } catch (err) {
+    console.warn("[talker] lines.json 读取失败", err);
+    talkerState.lines = [];
+  }
+  return talkerState.lines;
+}
+
+function inQuietHours(cfg) {
+  try {
+    const now = new Date();
+    const cur = now.getHours() * 60 + now.getMinutes();
+    const toMin = (s) => {
+      const [h, m] = String(s).split(":").map((x) => parseInt(x, 10));
+      return (isNaN(h) ? 0 : h) * 60 + (isNaN(m) ? 0 : m);
+    };
+    const a = toMin(cfg.quiet?.[0] ?? "00:00");
+    const b = toMin(cfg.quiet?.[1] ?? "00:00");
+    if (a === b) return false;
+    return a < b ? (cur >= a && cur < b) : (cur >= a || cur < b);
+  } catch {
+    return false;
+  }
+}
+
+function talkerBlocked() {
+  const cfg = talkerCfg();
+  if (!cfg.enabled) return true;
+  try {
+    if (!win || win.isDestroyed() || !win.isVisible()) return true;
+    if (dragTimer) return true;
+    if (wanderState.moving) return true;               // 走路时先不说话
+    const d = chatHost && chatHost.dialog;
+    if (d && !d.isDestroyed() && d.isVisible()) return true;
+    if (chatHost && (chatHost.focusMode || chatHost.bubbleVisible)) return true;
+    if (inQuietHours(cfg)) return true;
+    const now = Date.now();
+    if (now - talkerState.lastAt < Math.max(1, cfg.minGapMin) * 60000) return true;
+    if (now - talkerState.hourWindowStart > 3600000) {
+      talkerState.hourWindowStart = now;
+      talkerState.hourCount = 0;
+    }
+    if (talkerState.hourCount >= Math.max(1, cfg.maxPerHour)) return true;
+  } catch (err) {
+    return true;
+  }
+  return false;
+}
+
+function pickLine() {
+  const cats = loadLines();
+  if (!cats.length) return "";
+  const now = new Date();
+  const hour = now.getHours();
+  const mmdd = String(now.getMonth() + 1).padStart(2, "0") + "-" + String(now.getDate()).padStart(2, "0");
+  const recent = talkerCfg().recentLines || [];
+
+  const ok = cats.filter((c) => {
+    const w = c.when || {};
+    if (Array.isArray(w.hours) && !w.hours.includes(hour)) return false;
+    if (Array.isArray(w.date) && !w.date.includes(mmdd)) return false;
+    if (c.trigger === "afterPat" && Date.now() - talkerState.lastPatAt > 90000) return false;
+    if (c.trigger === "afterPoke" && Date.now() - talkerState.lastPokeAt > 90000) return false;
+    return Array.isArray(c.lines) && c.lines.length > 0;
+  });
+  if (!ok.length) return "";
+
+  const total = ok.reduce((s, c) => s + Math.max(1, Number(c.weight) || 1), 0);
+  let roll = Math.random() * total;
+  let pick = ok[0];
+  for (const c of ok) {
+    roll -= Math.max(1, Number(c.weight) || 1);
+    if (roll <= 0) { pick = c; break; }
+  }
+  const pool = pick.lines.filter((l) => !recent.includes(l));
+  const list = pool.length ? pool : pick.lines;
+  return list[Math.floor(Math.random() * list.length)] || "";
+}
+
+function rememberLine(text) {
+  const cfg = talkerCfg();
+  const recent = Array.isArray(cfg.recentLines) ? cfg.recentLines.slice() : [];
+  recent.push(text);
+  while (recent.length > 10) recent.shift();
+  settings.talker = Object.assign({}, cfg, { recentLines: recent });
+  persistSettings();
+}
+
+function sayProactively(text) {
+  const say = String(text || "").trim();
+  if (!say) return false;
+  try {
+    if (stopWalk) stopWalk();
+    if (!chatHost || typeof chatHost.onProactive !== "function") return false;
+    chatHost.onProactive({ id: "local-" + Date.now(), text: say, at: Date.now() });
+    talkerState.lastAt = Date.now();
+    talkerState.hourCount += 1;
+    rememberLine(say);
+    console.log("[talker] say:", say);
+    return true;
+  } catch (err) {
+    console.warn("[talker] say failed", err);
+    return false;
+  }
+}
+
+function tickTalker(force) {
+  try {
+    if (!force && talkerBlocked()) return;
+    const cfg = talkerCfg();
+    if (!force && Math.random() >= Math.max(0, Math.min(1, Number(cfg.chance) || 0))) return;
+    sayProactively(pickLine());
+  } catch (err) {
+    console.warn("[talker] tick failed", err);
+  }
+}
+
+function startTalker() {
+  if (talkerState.timer) return;
+  loadLines();
+  talkerState.timer = setInterval(() => tickTalker(false), 60000);
+  console.log("[talker] on  chance=", talkerCfg().chance, " minGap=", talkerCfg().minGapMin, "min");
+}
+
+function stopTalker() {
+  if (talkerState.timer) { clearInterval(talkerState.timer); talkerState.timer = null; }
+  console.log("[talker] off");
+}
+
+function applyTalkerSetting() {
+  if (talkerCfg().enabled) startTalker(); else stopTalker();
 }
 function speakFor(durationMs) {
   if (!win || win.isDestroyed()) return;
@@ -1484,6 +1644,18 @@ function showContextMenu() {
         applyWanderSetting();
       }
     },
+    {
+      label: "\u81EA\u5DF1\u8BF4\u8BDD",
+      type: "checkbox",
+      checked: talkerCfg().enabled !== false,
+      click: (item) => {
+        settings.talker = Object.assign({}, talkerCfg(), { enabled: !!item.checked });
+        persistSettings();
+        applyTalkerSetting();
+        refreshTrayMenu();
+      }
+    },
+    { label: "\u9A6C\u4E0A\u8BF4\u4E00\u53E5", click: () => tickTalker(true) },
     { type: "separator" },
     buildSkinSubmenu(),
     buildThemeSubmenu(),
@@ -1570,6 +1742,18 @@ function trayTemplate() {
         applyWanderSetting();
       }
     },
+    {
+      label: "\u81EA\u5DF1\u8BF4\u8BDD",
+      type: "checkbox",
+      checked: talkerCfg().enabled !== false,
+      click: (item) => {
+        settings.talker = Object.assign({}, talkerCfg(), { enabled: !!item.checked });
+        persistSettings();
+        applyTalkerSetting();
+        refreshTrayMenu();
+      }
+    },
+    { label: "\u9A6C\u4E0A\u8BF4\u4E00\u53E5", click: () => tickTalker(true) },
     { type: "separator" },
     buildSkinSubmenu(),
     buildThemeSubmenu(),
@@ -1916,6 +2100,7 @@ import_electron2.app.whenReady().then(() => {
   console.log("[skin] available:", listSkins().map((s) => `${s.id}=${s.name}`).join(" | "));
   createWindow();
 applyWanderSetting();
+applyTalkerSetting();
   chatHost = new ChatHost({
     distDir: __dirname,
     preload: import_node_path3.default.join(__dirname, "preload.js"),
