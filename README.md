@@ -1,5 +1,13 @@
 # 大夕瓜桌宠 · DaXiGua Pet (`daxigua-pet`)
 
+<p align="center">
+  <img src="docs/assets/demo.gif" alt="大夕瓜桌宠演示：呼吸、眨眼、视线跟随、耳朵抽动、说话口型" width="380">
+</p>
+
+<p align="center">
+  <sub>呼吸 · 眨眼 · 视线跟随鼠标 · 耳朵抽动 · 说话口型（4 秒循环）</sub>
+</p>
+
 <p>
   <a href="https://www.echolnk.top/?page=cases&project=daxigua-pet"><b>⬇️ 点此下载安装包</b></a>
   &nbsp;·&nbsp;
