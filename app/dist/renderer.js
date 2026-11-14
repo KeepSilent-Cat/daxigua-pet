@@ -43680,6 +43680,14 @@ ${parts.join("\n")}
         this.hopVel = 300;
         this.blink();
         this.jellyImpulse(-0.3);
+      } else if (cmd === "walk-l") {
+        this.walking = 1;
+        this.walkDir = -1;
+      } else if (cmd === "walk-r") {
+        this.walking = 1;
+        this.walkDir = 1;
+      } else if (cmd === "walk-stop") {
+        this.walking = 0;
       }
     }
     /** 把嘴的开合度（0=闭，1=张）应用到当前皮肤的模式上 */
@@ -43963,14 +43971,17 @@ ${parts.join("\n")}
       const breath = Math.sin(this.t * 1.9);
       const sway = Math.sin(this.t * 0.62);
       const patBounce = patting ? Math.sin(this.t * 9) * 2.2 : 0;
+      this.walkAmt = lerp(this.walkAmt ?? 0, this.walking ? 1 : 0, clamp(dt * 5, 0, 1));
+      const walkBob = this.walkAmt > 0.01 ? Math.abs(Math.sin(this.t * 9.5)) * 6 * this.walkAmt : 0;
+      const walkLean = (this.walkDir || 0) * 0.014 * this.walkAmt;
       this.body.scale.y = 1 + breath * m2.breath - this.squash * 0.075;
       this.body.scale.x = 1 - breath * (m2.breath * 0.36) + this.squash * 0.06;
       if (this.opts.jelly) {
         this.body.scale.y *= 1 + this.jelly;
         this.body.scale.x *= 1 - this.jelly * 0.55;
       }
-      this.body.rotation = sway * m2.sway + this.squash * 0.02 + (patting ? Math.sin(this.t * 7) * 6e-3 : 0);
-      this.body.y = this.manifest.canvas.h + breath * 1.6 - this.hop - patBounce;
+      this.body.rotation = sway * m2.sway + this.squash * 0.02 + (patting ? Math.sin(this.t * 7) * 6e-3 : 0) + walkLean;
+      this.body.y = this.manifest.canvas.h + breath * 1.6 - this.hop - patBounce - walkBob;
       this.backHair.rotation = -sway * (m2.backHairSway ?? 0.012) - this.headTurn * 4e-3;
       const patSway = patting ? Math.sin(this.t * 6.2) * 5 : 0;
       this.head.x = this.opts.headPivot[0] + this.headTurn * m2.headTurn + patSway;

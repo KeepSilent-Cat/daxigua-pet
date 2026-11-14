@@ -915,7 +915,7 @@ if (!hasSingleInstance) {
     if (win) win.showInactive();
   });
 }
-var settings = { scale: 0.44, skin: "" };
+var settings = { scale: 0.44, skin: "", wander: true };
 function settingsPath() {
   return import_node_path3.default.join(import_electron2.app.getPath("userData"), "settings.json");
 }
@@ -927,10 +927,11 @@ function loadSettings() {
       scale: Math.min(MAX_SCALE, Math.max(MIN_SCALE, scale)),
       skin: typeof raw.skin === "string" ? raw.skin : "",
       dialogMode: raw.dialogMode === "voice" ? "voice" : "text",
-      focusMode: raw.focusMode === true
+      focusMode: raw.focusMode === true,
+      wander: raw.wander !== false
     };
   } catch {
-    return { scale: 0.44, skin: "", dialogMode: "text", focusMode: false };
+    return { scale: 0.44, skin: "", dialogMode: "text", focusMode: false, wander: true };
   }
 }
 function persistSettings() {
@@ -1289,6 +1290,93 @@ function snapToEdge() {
 function send(cmd) {
   win?.webContents.send("pet:command", cmd);
 }
+
+// ---------------- 自己走动 ----------------
+var wanderState = { timer: null, step: null, moving: false, dir: 1, speed: 105 };
+
+function wanderBlocked() {
+  try {
+    if (!win || win.isDestroyed()) return true;
+    if (!win.isVisible()) return true;
+    if (dragTimer) return true;
+    const d = chatHost && chatHost.dialog;
+    if (d && !d.isDestroyed() && d.isVisible()) return true;
+  } catch (err) {
+    return true;
+  }
+  return false;
+}
+
+function stopWalk() {
+  if (wanderState.step) { clearInterval(wanderState.step); wanderState.step = null; }
+  if (wanderState.moving) {
+    wanderState.moving = false;
+    try { send("walk-stop"); } catch {}
+  }
+}
+
+function startWalk() {
+  if (!win || win.isDestroyed() || wanderBlocked()) return;
+  const b = win.getBounds();
+  const wa = import_electron.screen.getDisplayMatching(b).workArea;
+  const margin = 30;
+  const minX = Math.round(wa.x + margin);
+  const maxX = Math.round(wa.x + wa.width - b.width - margin);
+  if (maxX <= minX) return;
+
+  let target = minX + Math.random() * (maxX - minX);
+  if (Math.abs(target - b.x) < 140) {
+    target = b.x - minX > maxX - b.x
+      ? minX + Math.random() * Math.max(1, b.x - minX - 140)
+      : b.x + 140 + Math.random() * Math.max(1, maxX - b.x - 140);
+  }
+  target = Math.round(Math.min(maxX, Math.max(minX, b.x + (target - b.x))));
+  if (!Number.isFinite(target)) return;
+  const dist = Math.abs(target - b.x);
+  if (dist < 60) return;
+
+  const durMs = Math.min(12000, Math.max(1000, (dist / wanderState.speed) * 1000));
+  const t0 = Date.now();
+  const x0 = b.x;
+  wanderState.dir = target > x0 ? 1 : -1;
+  wanderState.moving = true;
+  try { send(wanderState.dir > 0 ? "walk-r" : "walk-l"); } catch (err) { /* 渲染层还没好，不影响移动 */ }
+
+  wanderState.step = setInterval(() => {
+    if (!win || win.isDestroyed() || wanderBlocked()) { stopWalk(); return; }
+    const k = Math.min(1, (Date.now() - t0) / durMs);
+    const e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+    const x = Math.round(x0 + (target - x0) * e);
+    const bb = win.getBounds();
+    if (Number.isFinite(x) && Number.isFinite(bb.y) && Math.abs(x) < 30000) {
+      try { win.setPosition(x, bb.y); } catch (err) { console.warn("[wander] move failed", err); stopWalk(); }
+    }
+    if (k >= 1) stopWalk();
+  }, 16);
+}
+
+function startWander() {
+  if (wanderState.timer) return;
+  wanderState.timer = setInterval(() => {
+    try {
+      if (wanderState.moving || wanderBlocked()) return;
+      if (Math.random() < 0.4) startWalk();
+    } catch (err) {
+      console.warn("[wander] tick failed", err);
+    }
+  }, 4000);
+  console.log("[wander] on");
+}
+
+function stopWander() {
+  if (wanderState.timer) { clearInterval(wanderState.timer); wanderState.timer = null; }
+  stopWalk();
+  console.log("[wander] off");
+}
+
+function applyWanderSetting() {
+  if (settings.wander) startWander(); else stopWander();
+}
 function speakFor(durationMs) {
   if (!win || win.isDestroyed()) return;
   const ms = Math.max(900, Math.min(6e4, Math.round(durationMs || 0)));
@@ -1386,6 +1474,16 @@ function showContextMenu() {
   const template = [
     ...chatMenuItems(),
     focusMenuItem(),
+    {
+      label: "\u81EA\u5DF1\u8D70\u52A8",
+      type: "checkbox",
+      checked: settings.wander !== false,
+      click: (item) => {
+        settings.wander = !!item.checked;
+        persistSettings();
+        applyWanderSetting();
+      }
+    },
     { type: "separator" },
     buildSkinSubmenu(),
     buildThemeSubmenu(),
@@ -1462,6 +1560,16 @@ function trayTemplate() {
   return [
     ...chatMenuItems(),
     focusMenuItem(),
+    {
+      label: "\u81EA\u5DF1\u8D70\u52A8",
+      type: "checkbox",
+      checked: settings.wander !== false,
+      click: (item) => {
+        settings.wander = !!item.checked;
+        persistSettings();
+        applyWanderSetting();
+      }
+    },
     { type: "separator" },
     buildSkinSubmenu(),
     buildThemeSubmenu(),
@@ -1807,6 +1915,7 @@ import_electron2.app.whenReady().then(() => {
   import_electron2.ipcMain.on("slider:close", () => slider?.close());
   console.log("[skin] available:", listSkins().map((s) => `${s.id}=${s.name}`).join(" | "));
   createWindow();
+applyWanderSetting();
   chatHost = new ChatHost({
     distDir: __dirname,
     preload: import_node_path3.default.join(__dirname, "preload.js"),
