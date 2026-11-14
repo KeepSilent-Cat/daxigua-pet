@@ -43971,11 +43971,19 @@ ${parts.join("\n")}
       const breath = Math.sin(this.t * 1.9);
       const sway = Math.sin(this.t * 0.62);
       const patBounce = patting ? Math.sin(this.t * 9) * 2.2 : 0;
-      this.walkAmt = lerp(this.walkAmt ?? 0, this.walking ? 1 : 0, clamp(dt * 5, 0, 1));
-      const walkBob = this.walkAmt > 0.01 ? Math.abs(Math.sin(this.t * 9.5)) * 6 * this.walkAmt : 0;
-      const walkLean = (this.walkDir || 0) * 0.014 * this.walkAmt;
-      this.body.scale.y = 1 + breath * m2.breath - this.squash * 0.075;
-      this.body.scale.x = 1 - breath * (m2.breath * 0.36) + this.squash * 0.06;
+      this.walkAmt = lerp(this.walkAmt ?? 0, this.walking ? 1 : 0, clamp(dt * 6, 0, 1));
+      if (this.walking) {
+        const __cad = 3 * (1 + 0.08 * Math.sin(this.t * 0.7));
+        this.walkPhase = (this.walkPhase ?? 0) + dt * __cad;
+      }
+      const walkPh = (this.walkPhase ?? 0) * Math.PI;
+      const walkStep = Math.sin(walkPh);
+      const walkBob = Math.abs(walkStep) * 9 * this.walkAmt;
+      const walkLean = ((this.walkDir || 0) * 0.02 + walkStep * 0.018) * this.walkAmt;
+      const walkHeadBob = (this.walking ? Math.sin(walkPh - 0.9) * 2.8 : 0) * this.walkAmt;
+      const walkLand = Math.max(0, 1 - Math.abs(walkStep) * 5) * this.walkAmt;
+      this.body.scale.y = 1 + breath * m2.breath - this.squash * 0.075 - walkLand * 0.05;
+      this.body.scale.x = 1 - breath * (m2.breath * 0.36) + this.squash * 0.06 + walkLand * 0.035;
       if (this.opts.jelly) {
         this.body.scale.y *= 1 + this.jelly;
         this.body.scale.x *= 1 - this.jelly * 0.55;
@@ -43985,7 +43993,7 @@ ${parts.join("\n")}
       this.backHair.rotation = -sway * (m2.backHairSway ?? 0.012) - this.headTurn * 4e-3;
       const patSway = patting ? Math.sin(this.t * 6.2) * 5 : 0;
       this.head.x = this.opts.headPivot[0] + this.headTurn * m2.headTurn + patSway;
-      this.head.y = this.opts.headPivot[1] + this.gaze.y * -2.5 + (speaking ? Math.sin(this.t * 7.5) * 1.6 : 0);
+      this.head.y = this.opts.headPivot[1] + this.gaze.y * -2.5 + (speaking ? Math.sin(this.t * 7.5) * 1.6 : 0) + walkHeadBob;
       this.head.rotation = this.headTurn * this.opts.headTilt + (speaking ? Math.sin(this.t * 3.2) * 4e-3 : 0) + (patting ? -0.02 : 0);
       const __gmaxOf = (side) => {
         const v = Array.isArray(m2.gazeMax) ? m2.gazeMax : (m2.gazeMax && m2.gazeMax[side]) || (m2.gazeMax && m2.gazeMax.l) || [6, 4.5];

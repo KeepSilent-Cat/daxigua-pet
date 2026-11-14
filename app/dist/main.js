@@ -1292,7 +1292,7 @@ function send(cmd) {
 }
 
 // ---------------- 自己走动 ----------------
-var wanderState = { timer: null, step: null, moving: false, dir: 1, speed: 105 };
+var wanderState = { timer: null, step: null, moving: false, dir: 1, speed: 72 };
 
 function wanderBlocked() {
   try {
