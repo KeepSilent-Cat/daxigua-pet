@@ -521,7 +521,7 @@ var ChatHost = class {
     const w = this.bubbleSize.w;
     const h = this.bubbleSize.h;
     let x = Math.round(pet.x + pet.width / 2 - w / 2);
-    let y = Math.round(pet.y - h - 8);
+    let y = Math.round(pet.y - h + 2);
     if (y < wa.y + 4) {
       y = Math.round(pet.y + Math.min(120, Math.max(24, pet.height * 0.18)));
     }
@@ -923,8 +923,8 @@ if (!hasSingleInstance) {
 var settings = { scale: 0.44, skin: "", wander: true, talker: null };
 var TALKER_DEFAULTS = {
   enabled: true,
-  chance: 0.35,
-  minGapMin: 8,
+  chance: 0.45,
+  minGapMin: 4,
   quiet: [],
   maxPerHour: 6,
   recentLines: []
@@ -1435,28 +1435,35 @@ function inQuietHours(cfg) {
   }
 }
 
-function talkerBlocked() {
+function talkerSkipReason() {
   const cfg = talkerCfg();
-  if (!cfg.enabled) return true;
+  if (!cfg.enabled) return "disabled";
   try {
-    if (!win || win.isDestroyed() || !win.isVisible()) return true;
-    if (dragTimer) return true;
-    if (wanderState.moving) return true;               // 走路时先不说话
+    if (!win || win.isDestroyed() || !win.isVisible()) return "no-window";
+    if (dragTimer) return "dragging";
+    if (wanderState.moving) return "walking";
     const d = chatHost && chatHost.dialog;
-    if (d && !d.isDestroyed() && d.isVisible()) return true;
-    if (chatHost && (chatHost.focusMode || chatHost.bubbleVisible)) return true;
-    if (inQuietHours(cfg)) return true;
+    if (d && !d.isDestroyed() && d.isVisible()) return "dialog-open";
+    if (chatHost && chatHost.focusMode) return "focus";
+    if (chatHost && chatHost.bubbleVisible) return "bubble-showing";
+    if (inQuietHours(cfg)) return "quiet-hours";
     const now = Date.now();
-    if (now - talkerState.lastAt < Math.max(1, cfg.minGapMin) * 60000) return true;
+    const gap = Math.max(1, cfg.minGapMin) * 60000;
+    if (now - talkerState.lastAt < gap) {
+      return "min-gap " + Math.ceil((gap - (now - talkerState.lastAt)) / 60000) + "min left";
+    }
     if (now - talkerState.hourWindowStart > 3600000) {
       talkerState.hourWindowStart = now;
       talkerState.hourCount = 0;
     }
-    if (talkerState.hourCount >= Math.max(1, cfg.maxPerHour)) return true;
+    if (talkerState.hourCount >= Math.max(1, cfg.maxPerHour)) return "hourly-cap";
   } catch (err) {
-    return true;
+    return "error:" + err.message;
   }
-  return false;
+  return "";
+}
+function talkerBlocked() {
+  return talkerSkipReason() !== "";
 }
 
 function pickLine() {
@@ -1518,9 +1525,15 @@ function sayProactively(text) {
 
 function tickTalker(force) {
   try {
-    if (!force && talkerBlocked()) return;
-    const cfg = talkerCfg();
-    if (!force && Math.random() >= Math.max(0, Math.min(1, Number(cfg.chance) || 0))) return;
+    if (!force) {
+      const why = talkerSkipReason();
+      if (why) { console.log("[talker] skip:", why); return; }
+      const cfg = talkerCfg();
+      if (Math.random() >= Math.max(0, Math.min(1, Number(cfg.chance) || 0))) {
+        console.log("[talker] skip: dice");
+        return;
+      }
+    }
     sayProactively(pickLine());
   } catch (err) {
     console.warn("[talker] tick failed", err);

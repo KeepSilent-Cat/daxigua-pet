@@ -43,7 +43,7 @@
       }
       .bubble.in { opacity: 1; transform: translateY(0) scale(1); }
       .bubble.out { opacity: 0; transform: translateY(4px) scale(0.97); }
-      .card {
+      #root .card {
         position: relative;
         max-height: 286px;
         overflow-y: auto;
@@ -60,7 +60,7 @@
       .card::-webkit-scrollbar-thumb { background: rgba(255, 143, 177, 0.45); border-radius: 9px; }
       .card::-webkit-scrollbar-track { background: transparent; }
 
-      .tail {
+      #root .tail {
         position: absolute;
         left: 50%;
         bottom: 3px;
@@ -104,7 +104,7 @@
         border: 1px solid rgba(255, 143, 177, 0.32);
       }
 
-      .text {
+      #root .text {
         white-space: pre-wrap;
         word-break: break-word;
         font-size: 14px;
@@ -184,38 +184,56 @@
           /* #avatar-img-rule */
       .fish { overflow: hidden; padding: 0 !important; }
       .fish img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: inherit; }
-      /* ================= 漫画气泡（覆盖上面的原始样式） ================= */
-      #root { padding: 8px 8px 20px !important; }
+      /* ================= 漫画气泡 v2（单一形状 + 青瓷渐变 + 半嵌尖角） ================= */
+      /* 干掉主题误伤：主题里 .bubble 是给「对话框消息」用的，这里把外层容器清空 */
+      #root #bubble, #root .bubble {
+        background: none !important;
+        border: 0 !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+      }
+      #root { padding: 6px 8px 13px !important; }
       /* 只留文本：头像、名称、标签、播放、回复、关闭全部隐藏 */
-      .who, .foot, .fish, .tag, .play, button.reply, button.close, .spacer { display: none !important; }
-      .card {
-        padding: 15px 19px !important;
-        border-radius: 18px !important;
-        background: #fffdf7 !important;
-        border: 2px solid #2f2a33 !important;
-        box-shadow: 3px 4px 0 rgba(47, 42, 51, 0.16) !important;
-        color: #241f2a !important;
+      #root .who, #root .foot, #root .fish, #root .tag, #root .play, #root button.reply, #root button.close, #root .spacer { display: none !important; }
+
+      /* 卡片：无描边，青瓷冷白 → 淡青的竖向渐变 */
+      #root .card {
+        position: relative !important;
+        z-index: 1 !important;
+        padding: 13px 17px !important;
+        border-radius: 14px !important;
+        border: 0 !important;
+        background-color: #f4faf8 !important;
+        background-image: linear-gradient(168deg,
+            #ffffff 0%,
+            #f3faf8 42%,
+            #e3f0ec 78%,
+            #d8e9e4 100%) !important;
+        box-shadow: 0 7px 20px rgba(16, 28, 24, 0.13) !important;
+        color: #22312c !important;
         max-height: 300px !important;
       }
-      .text {
+      #root .text {
         font-size: 15px !important;
-        line-height: 1.72 !important;
-        letter-spacing: 0.2px;
-        color: #241f2a !important;
+        line-height: 1.75 !important;
+        letter-spacing: 0.3px;
+        color: #22312c !important;
       }
-      /* 气泡尖角：指向左下（对着桌宠的头） */
-      .tail {
-        left: 34px !important;
+
+      /* 尖角：菱形中心压在卡片底边上，上半个被卡片盖住，只露下半个 */
+      #root .tail {
+        left: 38px !important;
         margin-left: 0 !important;
-        bottom: -5px !important;
-        width: 15px !important;
-        height: 15px !important;
-        background: #fffdf7 !important;
-        border-right: 2px solid #2f2a33 !important;
-        border-bottom: 2px solid #2f2a33 !important;
-        border-radius: 0 0 4px 0 !important;
+        bottom: -8px !important;
+        width: 17px !important;
+        height: 17px !important;
+        background: #d8e9e4 !important;
+        background-image: none !important;
+        border: 0 !important;
+        border-radius: 0 0 3px 0 !important;
+        box-shadow: none !important;
         transform: rotate(45deg) !important;
-        z-index: 1 !important;
+        z-index: 0 !important;
       }
     </style>
   </head>
